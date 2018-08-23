@@ -1,6 +1,7 @@
 require('./style.css');
 
 var OfflinePlugin = require('offline-plugin/runtime');
+var WasmAddModulePromise = import('@mgattozzi/wasm-add/wasm_add');
 
 OfflinePlugin.install({
   onInstalled: function() {
@@ -24,7 +25,7 @@ var offlineReady = document.querySelector('#offline-ready');
 var offlineReadyClose = document.querySelector('#offline-ready-close');
 var wifiShape = document.querySelector('#wifi-shape');
 
-(function() {
+WasmAddModulePromise.then(function(wasmAdd) {
   var rotation = 0;
 
   setInterval(function() {
@@ -34,7 +35,7 @@ var wifiShape = document.querySelector('#wifi-shape');
       hexagon.style.transform = 'rotate(' + rotation + 'deg)';
     }
 
-    rotation = rotation + 60;
+    rotation = wasmAdd.add(rotation, 60);
 
     requestAnimationFrame(function() {
       requestAnimationFrame(function() {
@@ -43,7 +44,7 @@ var wifiShape = document.querySelector('#wifi-shape');
       })
     });
   }, 3000);
-}());
+});
 
 offlineReadyClose.addEventListener('click', function() {
   closeOfflineReady()
