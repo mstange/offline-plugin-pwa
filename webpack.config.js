@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const OfflinePlugin = require('offline-plugin');
 
@@ -17,22 +17,20 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        loaders: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            'css-loader',
-            {
-              loader: 'postcss-loader',
-              options: {
-                plugins: function() {
-                  return [
-                    require('autoprefixer')({ browsers: ['> 1%', 'IE >= 10'] })
-                  ];
-                }
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: function() {
+                return [
+                  require('autoprefixer')({ browsers: ['> 1%', 'IE >= 10'] })
+                ];
               }
             }
-          ]
-        })
+          }
+        ]
       },
       {
         test: /\.(woff2?|ttf)$/,
@@ -59,7 +57,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'index.html'
     }),
-    new ExtractTextPlugin({
+    new MiniCssExtractPlugin({
       filename: '[name].css'
     }),
     new CopyWebpackPlugin([
